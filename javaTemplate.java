@@ -20,17 +20,31 @@ public class {
         // int arr[] = scanIntArray(n);
         // System.out.println(helper(arr, n));
 
+        // int n = scanInt();
+        // String str = scanString();
+        // System.out.println(helper(str, n, 0));
 
         // int n = scanInt();
         // System.out.println(helper(n));
     }
 
-    static int MOD = 1_000_000_007;
-    static int INF = (int) 1e9;
-    static long fact[];
+    // ==================== CONSTANTS ====================
+
+    static final int MOD = 1_000_000_007;
+    static final int INF = (int) 1e9;
+    static long[] fact;
     static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
     static BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
     static StringTokenizer st;
+
+    // ==================== INPUT HELPERS ====================
+
+    static String nextToken() throws IOException {
+        if (st == null || !st.hasMoreTokens()) {
+            st = new StringTokenizer(br.readLine());
+        }
+        return st.nextToken();
+    }
 
     static int scanInt() throws IOException {
         return Integer.parseInt(nextToken());
@@ -60,6 +74,33 @@ public class {
         return array;
     }
 
+    // ==================== OUTPUT HELPERS ====================
+
+    static void print(Object o) throws IOException {
+        bw.write(o.toString());
+        bw.newLine();
+        bw.flush();
+    }
+
+    static void printArray(int arr[]) throws IOException {
+        StringBuilder sb = new StringBuilder();
+        for (int e : arr) {
+            sb.append(e + " ");
+        }
+        bw.write(sb.toString().trim());
+        bw.newLine();
+        bw.flush();
+    }
+
+    static void printArray(long[] arr) throws IOException {
+        for (int i = 0; i < arr.length; i++) {
+            bw.write(arr[i] + (i == arr.length - 1 ? "\n" : " "));
+        }
+        bw.flush();
+    }
+
+    // ==================== UTILITY FUNCTIONS ====================
+
     static int GCD(int a, int b) {
         return (b == 0) ? (a) : GCD(b, a % b);
     }
@@ -68,11 +109,18 @@ public class {
         return ((a * b) / GCD(a, b));
     }
 
-    static String nextToken() throws IOException {
-        if (st == null || !st.hasMoreTokens()) {
-            st = new StringTokenizer(br.readLine());
+    static long pow(long base, long exp) {
+        long ans = 1l;
+        boolean isNegativeExponent = exp < 0;
+        exp = Math.abs(exp);
+        while (exp > 0) {
+            if ((exp & 1) == 1) {
+                ans = (ans * base * 1l) % MOD;
+            }
+            base = (base * base * 1l) % MOD;
+            exp >>= 1;
         }
-        return st.nextToken();
+        return isNegativeExponent ? (1l / ans) : ans;
     }
 
     static List<Integer> getPrimeList(int from, int tillWhere) {
@@ -103,16 +151,6 @@ public class {
             }
         }
         return divisorList;
-    }
-
-    static void printArray(int arr[]) throws IOException {
-        StringBuilder sb = new StringBuilder();
-        for (int e : arr) {
-            sb.append(e + " ");
-        }
-        bw.write(sb.toString().trim());
-        bw.newLine();
-        bw.flush();
     }
 
     static boolean isPrime(int n) {
@@ -146,20 +184,6 @@ public class {
         return primefactorsList;
     }
 
-    static long pow(long base, long exp) {
-        long ans = 1l;
-        boolean isNegativeExponent = exp < 0;
-        exp = Math.abs(exp);
-        while (exp > 0) {
-            if ((exp & 1) == 1) {
-                ans = (ans * base * 1l) % MOD;
-            }
-            base = (base * base * 1l) % MOD;
-            exp >>= 1;
-        }
-        return isNegativeExponent ? (1l / ans) : ans;
-    }
-
     static void compute_fact() {
         fact = new long[100001];
         fact[0] = fact[1] = 1;
@@ -176,11 +200,91 @@ public class {
         return ans;
     }
 
-    static void print(Object o) throws IOException {
-        bw.write(o.toString());
-        bw.newLine();
-        bw.flush();
+    // ==================== STRING / ARRAY HELPERS ====================
+
+    static String swap(String s, int i, int j) {
+        char[] arr = s.toCharArray();
+        char tmp = arr[i];
+        arr[i] = arr[j];
+        arr[j] = tmp;
+        return new String(arr);
     }
+
+    static void swap(int[] arr, int i, int j) {
+        int tmp = arr[i];
+        arr[i] = arr[j];
+        arr[j] = tmp;
+    }
+
+    static void swap(long[] arr, int i, int j) {
+        long tmp = arr[i];
+        arr[i] = arr[j];
+        arr[j] = tmp;
+    }
+
+    static void reverse(int[] arr) {
+        for (int i = 0, j = arr.length - 1; i < j; i++, j--)
+            swap(arr, i, j);
+    }
+
+    static void reverse(long[] arr) {
+        for (int i = 0, j = arr.length - 1; i < j; i++, j--)
+            swap(arr, i, j);
+    }
+
+    static int min(int... vals) {
+        int res = Integer.MAX_VALUE;
+        for (int v : vals)
+            res = Math.min(res, v);
+        return res;
+    }
+
+    static int max(int... vals) {
+        int res = Integer.MIN_VALUE;
+        for (int v : vals)
+            res = Math.max(res, v);
+        return res;
+    }
+
+    static long sum(int[] arr) {
+        long s = 0;
+        for (int v : arr)
+            s += v;
+        return s;
+    }
+
+    static long sum(long[] arr) {
+        long s = 0;
+        for (long v : arr)
+            s += v;
+        return s;
+    }
+
+    static int lowerBound(int[] arr, int x) {
+        int l = 0, r = arr.length;
+        while (l < r) {
+            int m = (l + r) >>> 1;
+            if (arr[m] < x)
+                l = m + 1;
+            else
+                r = m;
+        }
+        return l;
+    }
+
+    static int upperBound(int[] arr, int x) {
+        int l = 0, r = arr.length;
+        while (l < r) {
+            int m = (l + r) >>> 1;
+            if (arr[m] <= x)
+                l = m + 1;
+            else
+                r = m;
+        }
+        return l;
+    }
+
+    // ==================== GRAPH HELPERS ====================
 
     static List<List<Integer>> get_adj(int graph[][], int nNodes, boolean isDirected) {
         List<List<Integer>> adj = new ArrayList<>();
